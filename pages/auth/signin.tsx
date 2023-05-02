@@ -1,8 +1,27 @@
-import React from "react";
-import signIn from "@/firebase/auth/signin";
+import React, { useEffect, useState } from "react";
+// import signIn from "@/firebase/auth/signin";
 import { useRouter } from 'next/navigation'
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { getAuth } from "firebase/auth";
+import { app } from '@/firebase/config'
 
 export default function SignIn() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [
+    signInWithEmailAndPassword,
+    user,
+    loading,
+    error,
+  ] = useSignInWithEmailAndPassword(getAuth(app));
+
+  useEffect(() => {
+    if (user) {
+      router.push('/loans/list')
+    }
+  }, [user])
+
   return (
     <div className="w-full h-screen font-sans bg-cover bg-landscape">
       <div className="container flex items-center justify-center flex-1 h-full mx-auto">
@@ -20,7 +39,7 @@ export default function SignIn() {
                       </path>
                     </svg>
                   </span>
-                  <input type="text" id="sign-in-email" className=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Correo Electrónico" />
+                  <input type="text" id="sign-in-email" className="rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Correo Electrónico" onChange={(e) => setEmail(e.target.value)} />
                 </div>
               </div>
               <div className="flex flex-col mb-6">
@@ -31,7 +50,7 @@ export default function SignIn() {
                       </path>
                     </svg>
                   </span>
-                  <input type="password" id="sign-in-email" className=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Contraseña" />
+                  <input type="password" id="sign-in-email" className=" rounded-r-lg flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} />
                 </div>
               </div>
               <div className="flex items-center mb-6 -mt-4">
@@ -42,7 +61,7 @@ export default function SignIn() {
                 </div>
               </div>
               <div className="flex w-full">
-                <button type="submit" className="py-2 px-4 bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 focus:ring-offset-purple-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+                <button type="submit" className="py-2 px-4 bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 focus:ring-offset-purple-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg" onClick={() => signInWithEmailAndPassword(email, password)}>
                   Iniciar Sesión
                 </button>
               </div>
